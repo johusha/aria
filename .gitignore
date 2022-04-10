@@ -38,3 +38,4 @@ yarn-error.log*
 
 # 🤫 secrets
 .env
+builds/dj-3000/dj-3000-mvp-0.1.zip
