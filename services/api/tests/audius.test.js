@@ -13,12 +13,12 @@ describe('audius api', () => {
 
   it('forces an endpoint to be valid', async () => {
     const endpoint = 'https://discoveryprovider.audius.co'
-    const hosts = await getHostsFromEndpoints('https://api.audius.co', { force: true, endpoint })
+    const hosts = await getHostsFromEndpoints('https://api.audius.co', { forceValid: true, endpoint })
     expect(hosts).toContain(endpoint)
   })
 })
 
-async function getHostsFromEndpoints(endpoints, {force, endpoint} = {} ) {
+async function getHostsFromEndpoints(endpoints, {forceValid, endpoint} = {} ) {
   const rand = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
   const hosts = await axios.get(endpoints)
@@ -27,5 +27,5 @@ async function getHostsFromEndpoints(endpoints, {force, endpoint} = {} ) {
 
   const match = hosts.find(a => a === endpoint)
 
-  return force ? match : rand(hosts)
+  return forceValid ? match : rand(hosts)
 }
