@@ -1,0 +1,9 @@
+#clips-container {
+  display: flex;
+  flex-direction: row;
+  height: 250px;
+}
+
+#clips-controls {
+  padding: 30px;
+}
