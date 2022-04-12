@@ -1,56 +1,50 @@
-// const videoElems = document.getElementsByTagName('video')
-
-// for (var elem of videoElems) {
-//   const parent = elem.parent
-//   const slider = parent.getElementsByTagName('input')
-
-
-//   const video = elem
-//   slider.addEventListener('something', event => {
-//     // set playback speed of the preview
-//     const value = event.value
-
-//     video.playbackSpeed = value
-//     console.log('something changed to ', value)
-//   })
-// }
+// Main
+const LOOP_SEQUENCE = true
 
 window.addEventListener('load', () => {
-  let button = getSequenceButton()
-  console.log(button)
+  const videos = document.querySelectorAll('video')
+  const slider = document.getElementById('playback-speed')
+  const sequenceButton = document.querySelector("#clips-controls > input[type=button]:nth-child(1)")
 
-  button.addEventListener('click', () => {
-    const videos = document.getElementsByTagName('video')
+  slider.addEventListener('change', event => {
+    const target = event.currentTarget
+    const value = target.value
 
-    playVideosInSequence(videos)
+    for (const video of videos) {
+      video.playbackRate = value / 100
+      console.log({ rate: video.playbackRate })
+    }
   })
-})
 
-function getSequenceButton() {
-  const button = document.querySelector("#clips-controls > input[type=button]:nth-child(1)")
-
-  return button
-}
-
-function playAllVideos() {
-  for (var video of document.getElementsByTagName('video')) {
-    video.play()
-  }
-}
-
-function playVideosInSequence(videos) {
-  for (var video of videos) {
-    video.pause()
-    video.currentTime = 0
-
+  for (const video of videos) {
     video.addEventListener('ended', event => {
-      const sibling = event.target.parentElement.nextElementSibling.firstElementChild
-      if (sibling == undefined)
-        return console.warn('no next clip to play')
+      const sibling = event.currentTarget.nextElementSibling
 
-      sibling.play()
+      if (sibling == undefined) {
+        if (LOOP_SEQUENCE) {
+          sequenceButtonHandler()
+        }
+
+        return console.warn('reached end of clips')
+      } else {
+        sibling.play()
+      }
     })
   }
 
-  videos[0].play()
-}
+
+  const sequenceButtonHandler = () => {
+    const firstVideo = videos[0]
+
+    for (const video of videos) {
+      video.pause()
+      video.currentTime = 0
+      
+      video.playbackRate = slider.value / 100
+    }
+
+    firstVideo.play()
+  }
+
+  sequenceButton.addEventListener('click', sequenceButtonHandler)
+})
